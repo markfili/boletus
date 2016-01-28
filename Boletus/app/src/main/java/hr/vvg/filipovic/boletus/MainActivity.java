@@ -54,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
                 Image image = ImageFactory.getImage(imagePath);
 
                 Log.i(TAG, "onActivityResult: result is " + recognize(image));
-
             }
         }
     }
