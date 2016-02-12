@@ -28,27 +28,60 @@ import hr.vvg.filipovic.boletus.base.BaseActivity;
 
 /**
  * Main activity for loading the neural network and showing results.
- *
+ * <p/>
  * Created by marko on 12/02/16.
  */
 public class MainActivity extends BaseActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+
+    // result code for onActivityResult
     private static final int PHOTO_RESULT_CODE = 100;
+
+    // dimensions of images on which the network was trained
     private static final int SCALE_WIDTH = 20;
     private static final int SCALE_HEIGHT = 20;
+
+    // dimension of images in the gallery
     private static final int ORIGINAL_WIDTH = 200;
     private static final int ORIGINAL_HEIGHT = 151;
+
+    // pixels value multiplier for RGB color mode
     private static final int RGB_PIXELS_VALUE = 3;
 
-    private NeuralNetwork nnet;
-    private ImageRecognitionPlugin imageRecognition;
-
+    // ButterKnife view binding
     @Bind(R.id.imageView)
     protected ImageView imageView;
 
     @Bind(R.id.loading)
-    TextView loadingText;
+    protected TextView loadingText;
+
+    private NeuralNetwork nnet;
+    private ImageRecognitionPlugin imageRecognition;
+
+    // runnable for the network loading thread
+    private Runnable loadDataRunnable = new Runnable() {
+        @Override
+        public void run() {
+            // open neural network
+            InputStream is = getResources().openRawResource(R.raw.animal_network);
+
+            // load neural network
+            nnet = NeuralNetwork.load(is);
+            Log.i(TAG, "run: neural network initialized: " + (nnet == null));
+            Log.i(TAG, "run: input neurons count: " + nnet.getInputNeurons().length);
+
+            // initialize ImageRecognitionPlugin
+            imageRecognition = new ImageRecognitionPlugin(new Dimension(ORIGINAL_WIDTH, ORIGINAL_HEIGHT), ColorMode.COLOR_RGB);
+            // connect plugin to network
+            imageRecognition.setParentNetwork(nnet);
+
+            Log.i(TAG, "run: image pixels count: " + SCALE_HEIGHT * SCALE_WIDTH * RGB_PIXELS_VALUE);
+            Log.i(TAG, "run: imageRecognitionPlugin initialized: " + (imageRecognition == null));
+            hideDialog();
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +89,7 @@ public class MainActivity extends BaseActivity {
         // init activity layout
         setContentView(R.layout.activity_main);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+
         // bind views from layout with fields in activity
         ButterKnife.bind(this);
 
@@ -95,17 +129,6 @@ public class MainActivity extends BaseActivity {
     }
 
     /**
-     * Displays the selected image in an ImageView and recognition result in a TextView.
-     *
-     * @param bitmap selected image to be shown.
-     * @param result result text from image recognition.
-     */
-    private void showResults(Bitmap bitmap, String result) {
-        imageView.setImageBitmap(bitmap);
-        loadingText.setText(getString(R.string.result_text, result));
-    }
-
-    /**
      * Downscales the selected image and returns result from image recognition.
      *
      * @param bitmap image to be downscaled and recognized.
@@ -114,8 +137,10 @@ public class MainActivity extends BaseActivity {
     private String recognize(Bitmap bitmap) {
         showDialog();
 
+        // downscale selected image to training image's size
         Bitmap image = Bitmap.createScaledBitmap(bitmap, SCALE_WIDTH, SCALE_HEIGHT, false);
 
+        // set input to ImageRecognitionPlugin using an image wrapper for Android
         imageRecognition.setInput(new ImageAndroid(image));
         imageRecognition.processInput();
 
@@ -137,6 +162,26 @@ public class MainActivity extends BaseActivity {
         return answer;
     }
 
+    /*
+     * UI HELPER METHODS
+     */
+
+    /**
+     * Displays the selected image in an ImageView and recognition result in a TextView.
+     *
+     * @param bitmap selected image to be shown.
+     * @param result result text from image recognition.
+     */
+    private void showResults(Bitmap bitmap, String result) {
+        imageView.setImageBitmap(bitmap);
+        loadingText.setText(getString(R.string.result_text, result));
+    }
+
+
+    /*
+     * ON CLICK METHODS
+     */
+
     @OnClick(R.id.fab)
     protected void onSelectPhotoClick() {
         // build intent to search for content choosing apps
@@ -148,27 +193,4 @@ public class MainActivity extends BaseActivity {
         startActivityForResult(Intent.createChooser(intent,
                 "Select Picture"), PHOTO_RESULT_CODE);
     }
-
-    private Runnable loadDataRunnable = new Runnable() {
-        @Override
-        public void run() {
-            // open neural network
-            InputStream is = getResources().openRawResource(R.raw.animal_network);
-
-            // load neural network
-            nnet = NeuralNetwork.load(is);
-            Log.i(TAG, "run: neural network initialized: " + (nnet == null));
-            Log.i(TAG, "run: input neurons count: " + nnet.getInputNeurons().length);
-
-            // initialize ImageRecognitionPlugin
-            imageRecognition = new ImageRecognitionPlugin(new Dimension(ORIGINAL_WIDTH, ORIGINAL_HEIGHT), ColorMode.COLOR_RGB);
-            // connect plugin to network
-            imageRecognition.setParentNetwork(nnet);
-
-            Log.i(TAG, "run: image pixels count: " + SCALE_HEIGHT * SCALE_WIDTH * RGB_PIXELS_VALUE);
-            Log.i(TAG, "run: imageRecognitionPlugin initialized: " + (imageRecognition == null));
-            hideDialog();
-        }
-    };
-
 }
