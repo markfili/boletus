@@ -121,6 +121,8 @@ public class MainActivity extends BaseActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+
+                showDialog();
                 // show results of recognition on UI
                 showResults(image, recognize(image));
                 Log.i(TAG, "onActivityResult: result is " + recognize(image));
@@ -135,7 +137,6 @@ public class MainActivity extends BaseActivity {
      * @return image recognition result in String format.
      */
     private String recognize(Bitmap bitmap) {
-        showDialog();
 
         // downscale selected image to training image's size
         Bitmap image = Bitmap.createScaledBitmap(bitmap, SCALE_WIDTH, SCALE_HEIGHT, false);
@@ -175,6 +176,7 @@ public class MainActivity extends BaseActivity {
     private void showResults(Bitmap bitmap, String result) {
         imageView.setImageBitmap(bitmap);
         loadingText.setText(getString(R.string.result_text, result));
+        hideDialog();
     }
 
 
