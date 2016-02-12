@@ -12,17 +12,23 @@
     tools:context="hr.vvg.filipovic.boletus.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <TextView
-        android:id="@+id/loading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:textAppearance"
-        android:text="@string/hello_text" />
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/loading"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/activity_horizontal_margin"
+        android:scaleType="centerInside"
+        android:src="@mipmap/ic_launcher" />
+
+    <TextView
+        android:id="@id/loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:scaleType="centerInside" />
+        android:gravity="center"
+        android:text="@string/hello_text"
+        android:textAppearance="?android:textAppearance" />
 </RelativeLayout>

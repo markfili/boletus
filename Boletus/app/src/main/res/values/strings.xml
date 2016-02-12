@@ -2,5 +2,5 @@
     <string name="app_name">Boletus</string>
     <string name="action_settings">Settings</string>
     <string name="result_text">This is an image of a %1$s</string>
-    <string name="hello_text">Welcome to Image Recognition app.\nPlease select an image to start demonstration.</string>
+    <string name="hello_text">Welcome to Image Recognition app.\nPlease use the button to choose an image\nand start the recognition demonstration.</string>
 </resources>
