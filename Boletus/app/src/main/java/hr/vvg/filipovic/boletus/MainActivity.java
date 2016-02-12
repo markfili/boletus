@@ -125,7 +125,6 @@ public class MainActivity extends BaseActivity {
                 showDialog();
                 // show results of recognition on UI
                 showResults(image, recognize(image));
-                Log.i(TAG, "onActivityResult: result is " + recognize(image));
             }
         }
     }
@@ -176,6 +175,7 @@ public class MainActivity extends BaseActivity {
     private void showResults(Bitmap bitmap, String result) {
         imageView.setImageBitmap(bitmap);
         loadingText.setText(getString(R.string.result_text, result));
+        Log.i(TAG, "showResults: result is " + result);
         hideDialog();
     }
 
