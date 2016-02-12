@@ -15,3 +15,25 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+-dontwarn java.awt.**
+-dontwarn javax.swing.**
+-dontwarn org.**
+
+-keep class org.jocl.**
+-keep class android.support.**
+
+-keep class butterknife.** { *; }
+-dontwarn butterknife.internal.**
+-keep class **$$ViewBinder { *; }
+
+-keepclasseswithmembernames class * {
+    @butterknife.* <fields>;
+}
+
+-keepclasseswithmembernames class * {
+    @butterknife.* <methods>;
+}
+
+-keep class ch.qos.** { ; }
+-keep class org.slf4j.* { ; }
+-keepattributes *Annotation

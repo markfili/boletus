@@ -13,7 +13,16 @@
     tools:showIn="@layout/activity_main">
 
     <TextView
+        android:id="@+id/loading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:textAppearance="?android:textAppearance"
+        android:text="@string/hello_text" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:scaleType="centerInside" />
 </RelativeLayout>
